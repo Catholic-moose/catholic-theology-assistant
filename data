@@ -1,0 +1,5 @@
+catholic-theology-assistant/
+├─ app.py
+├─ requirements.txt
+├─ data/
+│   └─ ccc.pdf
