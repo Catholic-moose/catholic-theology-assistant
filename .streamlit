@@ -1,2 +1,2 @@
 # .streamlit/secrets.toml
-upload_password = "papist"  
+upload_password = "papist"  # <-- change this
