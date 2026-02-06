@@ -1,9 +1,21 @@
 import streamlit as st
-from scraper import scrape_catechism, get_catechism_links
+import PyPDF2
 
 st.set_page_config(page_title="Catholic Theology Assistant", page_icon="✝️")
 st.title("✝️ Catholic Theology Assistant")
-st.write("Load the Catechism directly from the Vatican website and check scraper output!")
+st.write("Upload a PDF of the Catechism and view its content in chunks!")
+
+# -------------------------
+# Helper function to extract PDF text
+# -------------------------
+def extract_pdf_text(pdf_file):
+    reader = PyPDF2.PdfReader(pdf_file)
+    text = ""
+    for page in reader.pages:
+        page_text = page.extract_text()
+        if page_text:
+            text += page_text + "\n"
+    return text
 
 # -------------------------
 # Helper function to split text
@@ -17,26 +29,22 @@ def split_text(text, chunk_size=500, overlap=50):
     return chunks
 
 # -------------------------
-# Load Catechism button
+# PDF uploader
 # -------------------------
-if st.button("Load Catechism from Vatican website"):
-    with st.spinner("Checking links first..."):
-        links = get_catechism_links()
-        st.write(f"Found {len(links)} pages to scrape.")
-        st.write("Here are the first 5 links:")
-        st.write(links[:5])  # preview first 5 links
+uploaded_file = st.file_uploader("Upload a PDF of the Catechism", type="pdf")
 
-    with st.spinner("Loading Catechism text..."):
-        catechism_text = scrape_catechism()
-        st.write(f"Total characters scraped: {len(catechism_text)}")
-        st.write("Preview of first 1000 characters:")
-        st.write(catechism_text[:1000])
-
-    # Split into chunks
+if uploaded_file is not None:
+    with st.spinner("Extracting text from PDF..."):
+        catechism_text = extract_pdf_text(uploaded_file)
+    
+    st.success("✅ PDF text extracted successfully!")
+    st.write(f"Total characters extracted: {len(catechism_text)}")
+    
+    # Split text into chunks
     chunks = split_text(catechism_text)
     st.write(f"Text split into {len(chunks)} chunks.")
-
-    # Show preview of first 3 chunks
+    
+    # Preview first 3 chunks
     for i, chunk in enumerate(chunks[:3]):
         st.write(f"**Chunk {i+1}:**")
-        st.write(chunk[:500] + "...")
+        st.write(chunk[:500] + "...")  # preview first 500 characters
