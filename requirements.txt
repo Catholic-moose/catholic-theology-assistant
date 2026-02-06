@@ -1,0 +1,4 @@
+streamlit==1.31.0
+sentence-transformers==2.5.1
+chromadb==0.4.22
+PyPDF2==3.0.1
