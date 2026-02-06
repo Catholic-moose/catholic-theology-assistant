@@ -1,3 +1,13 @@
+import streamlit as st
+from scraper import scrape_catechism  # make sure scraper.py is in your repo
+
+st.set_page_config(page_title="Catholic Theology Assistant", page_icon="✝️")
+st.title("✝️ Catholic Theology Assistant")
+st.write("Load the Catechism directly from the Vatican website and split it into chunks for later processing!")
+
+# -------------------------
+# Helper function to split text
+# -------------------------
 def split_text(text, chunk_size=500, overlap=50):
     """
     Split text into chunks of `chunk_size` words, with optional overlap.
@@ -9,18 +19,21 @@ def split_text(text, chunk_size=500, overlap=50):
         chunks.append(chunk)
     return chunks
 
-
-import streamlit as st
-from scraper import scrape_catechism  # this is the file we wrote earlier
-
-st.title("✝️ Catholic Theology Assistant")
-st.write("Load the Catechism directly from the Vatican website!")
-
-# Button to load the Catechism
+# -------------------------
+# Load Catechism button
+# -------------------------
 if st.button("Load Catechism from Vatican website"):
     with st.spinner("Loading Catechism, please wait..."):
         catechism_text = scrape_catechism()
     st.success("✅ Catechism loaded successfully!")
 
-    # Show a preview
-    st.write(catechism_text[:2000] + "...")  # first 2000 characters
+    # -------------------------
+    # Split text into chunks
+    # -------------------------
+    chunks = split_text(catechism_text)
+    st.write(f"Text split into {len(chunks)} chunks.")
+
+    # Show preview of first 3 chunks
+    for i, chunk in enumerate(chunks[:3]):
+        st.write(f"**Chunk {i+1}:**")
+        st.write(chunk[:500] + "...")  # show first 500 characters of each
