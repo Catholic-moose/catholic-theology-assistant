@@ -4,9 +4,9 @@ import PyPDF2
 st.title("✝️ Catholic Theology Research Assistant")
 
 # -------------------------
-# PASSWORD PROTECTION
+# PASSWORD PROTECTION (using secrets)
 # -------------------------
-PASSWORD = "mysecret123"  # <-- change to your own
+PASSWORD = st.secrets["upload_password"]
 
 password_input = st.text_input("Enter password to upload PDFs:", type="password")
 
